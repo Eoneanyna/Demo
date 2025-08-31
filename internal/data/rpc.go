@@ -4,10 +4,6 @@ import (
 	"context"
 	"demo/internal/conf"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/go-kratos/kratos/v2/middleware"
-	mmd "github.com/go-kratos/kratos/v2/middleware/metadata"
-	"github.com/go-kratos/kratos/v2/middleware/recovery"
-	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	transgrpc "github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/nacos-group/nacos-sdk-go/clients"
 	"github.com/nacos-group/nacos-sdk-go/clients/naming_client"
@@ -49,34 +45,22 @@ func NewGRPCClient(c *conf.Server, logger log.Logger) *GRPCClient {
 	if err != nil {
 		log.Error(err.Error())
 	}
-
 	d := &GRPCClient{
 		news: conn,
 	}
 
-	state := conn.GetState()
-	log.Infof("连接状态: %v", state)
-
 	return d
 }
 func NewRpcConn(cli naming_client.INamingClient, servicename string, group string) (*grpc.ClientConn, error) {
+	// 创建 gRPC 连接
 	conn, err := transgrpc.DialInsecure(
 		context.Background(),
-		//transgrpc.WithEndpoint("127.0.0.1:9000"),
-		transgrpc.WithMiddleware(
-			middleware.Chain(
-				recovery.Recovery(),
-				mmd.Client(),
-			),
-			tracing.Client(),
-		),
-
-		transgrpc.WithEndpoint("127.0.0.1:9001"),
-		//transgrpc.WithDiscovery(registry.New(cli, registry.WithGroup(group))),
-		transgrpc.WithTimeout(2*time.Second),
+		transgrpc.WithEndpoint("localhost:9001"), // 使用与 grpcurl 相同的地址
+		transgrpc.WithTimeout(10*time.Second),    // 增加超时时间
 	)
+
 	if err != nil {
-		log.Error("grpc连接失败", err.Error())
+		log.Errorf("failed to dial grpc server: %v", err)
 		return nil, err
 	}
 	return conn, nil

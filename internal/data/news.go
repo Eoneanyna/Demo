@@ -40,10 +40,6 @@ type GetNewsDetailResp struct {
 }
 
 func (r *newsRepo) GetNewsDetail(ctx context.Context, req *GetNewsDetailReq) (GetNewsDetailResp, error) {
-	//// 为 gRPC 调用创建一个更长的超时上下文
-	//grpcCtx, cancel := context.WithTimeout(ctx, 60*time.Second)
-	//defer cancel()
-
 	res, err := v1.NewNewsServiceClient(r.rpc.news).GetNewsById(ctx, &v1.GetNewsByIdRequest{Id: req.Id})
 	if err != nil {
 		r.log.Errorf("调用GetNewsById接口失败: %v", err)

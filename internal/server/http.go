@@ -1,6 +1,7 @@
 package server
 
 import (
+	"demo/api"
 	"demo/internal/conf"
 	"demo/internal/service"
 	"demo/middleware/validate"
@@ -10,11 +11,10 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	v1 "gitlab.cqrb.cn/shangyou_mic/testpg/api/helloworld/v1"
 )
 
 // NewHTTPServer new a HTTP server.
-func NewHTTPServer(c *conf.Server, GreeterService *service.GreeterService) *http.Server {
+func NewHTTPServer(c *conf.Server, newsService *service.NewsService) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
@@ -50,7 +50,8 @@ func NewHTTPServer(c *conf.Server, GreeterService *service.GreeterService) *http
 		ctx.JSON(200, map[string]string{"status": "UP"})
 		return nil
 	})
-	v1.RegisterGreeterHTTPServer(srv, GreeterService)
+	//v1.RegisterGreeterHTTPServer(srv, GreeterService)
+	api.RegisterNewsHTTPServer(srv, newsService)
 
 	return srv
 }

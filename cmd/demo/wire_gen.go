@@ -19,18 +19,18 @@ import (
 
 // initApp init kratos application.
 func initApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
-	dataData, cleanup, err := data.NewData(confData)
-	if err != nil {
-		return nil, nil, err
-	}
+	//dataData, cleanup, err := data.NewData(confData)
+	//if err != nil {
+	//	return nil, nil, err
+	//}
 	grpcClient := data.NewGRPCClient(confServer, logger)
-	greeterRepo := data.NewGreeterRepo(dataData, logger, grpcClient)
-	greeterUsecase := biz.NewGreeterUsecase(greeterRepo, logger)
-	greeterService := service.NewGreeterService(greeterUsecase, logger)
-	httpServer := server.NewHTTPServer(confServer, greeterService)
-	grpcServer := server.NewGRPCServer(confServer, greeterService)
+	newsRepo := data.NewNewsRepo(logger, grpcClient)
+	newsUsecase := biz.NewNewsUsecase(newsRepo,grpcClient, logger)
+	newsService := service.NewNewsService(newsUsecase, logger)
+	httpServer := server.NewHTTPServer(confServer, newsService)
+	grpcServer := server.NewGRPCServer(confServer)
 	app := newApp(logger, httpServer, grpcServer, confServer)
 	return app, func() {
-		cleanup()
+		//cleanup()
 	}, nil
 }

@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"demo/internal/conf"
 	registry "github.com/go-kratos/kratos/contrib/registry/nacos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
@@ -10,7 +11,6 @@ import (
 	"github.com/nacos-group/nacos-sdk-go/clients/naming_client"
 	"github.com/nacos-group/nacos-sdk-go/common/constant"
 	"github.com/nacos-group/nacos-sdk-go/vo"
-	"demo/internal/conf"
 	"time"
 )
 
@@ -43,7 +43,7 @@ func NewHttpClient(c *conf.Server, logger log.Logger) *HTTPClient {
 			ServerConfigs: sc,
 		},
 	)
-	conn, err := NewHttpConn(cli, "shangyou_go_news.http", "news")
+	conn, err := NewHttpConn(cli, "demo", "news")
 	if err != nil {
 		log.Error(err.Error())
 	}

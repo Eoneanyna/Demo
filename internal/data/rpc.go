@@ -19,7 +19,6 @@ import (
 
 type GRPCClient struct {
 	news *grpc.ClientConn
-	dtm  *grpc.ClientConn
 }
 
 func NewGRPCClient(c *conf.Server, logger log.Logger) *GRPCClient {
@@ -46,16 +45,17 @@ func NewGRPCClient(c *conf.Server, logger log.Logger) *GRPCClient {
 			ServerConfigs: sc,
 		},
 	)
-	conn, err := NewRpcConn(cli, "demoserveice.grpc", "news")
+	conn, err := NewRpcConn(cli, "demoserveice.NewsService", "news")
 	if err != nil {
 		log.Error(err.Error())
 	}
-	dtm, err := NewRpcConn(cli, "dtmservice.grpc", "dtm")
 
 	d := &GRPCClient{
 		news: conn,
-		dtm:  dtm,
 	}
+
+	state := conn.GetState()
+	log.Infof("连接状态: %v", state)
 
 	return d
 }
@@ -70,11 +70,13 @@ func NewRpcConn(cli naming_client.INamingClient, servicename string, group strin
 			),
 			tracing.Client(),
 		),
-		transgrpc.WithEndpoint("127.0.0.1:8309"),
+
+		transgrpc.WithEndpoint("127.0.0.1:9001"),
 		//transgrpc.WithDiscovery(registry.New(cli, registry.WithGroup(group))),
 		transgrpc.WithTimeout(2*time.Second),
 	)
 	if err != nil {
+		log.Error("grpc连接失败", err.Error())
 		return nil, err
 	}
 	return conn, nil

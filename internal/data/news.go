@@ -25,7 +25,15 @@ type CreateNewsResp struct {
 }
 
 func (r *newsRepo) CreateNews(ctx context.Context, news *CreateNewsReq) (CreateNewsResp, error) {
-	return CreateNewsResp{}, nil
+	res, err := v1.NewNewsServiceClient(r.rpc.news).CreateNews(ctx, &v1.CreateNewsRequest{Title: news.Title, Content: news.Content})
+	if err != nil {
+		r.log.Errorf("调用CreateNews接口失败: %v", err)
+		return CreateNewsResp{}, err
+	}
+
+	return CreateNewsResp{
+		Id: res.Id,
+	}, nil
 }
 
 type GetNewsDetailReq struct {

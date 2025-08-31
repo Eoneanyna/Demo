@@ -2,6 +2,7 @@ package service
 
 import (
 	"demo/internal/biz"
+	"demo/internal/data"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"strconv"
@@ -33,6 +34,46 @@ func (s *NewsService) GetNewsById(ctx http.Context) error {
 	}
 
 	respStruct, err := s.uc.GetNewsDetail(ctx, int32(id))
+	if err != nil {
+		return err
+	}
+
+	ctx.JSON(200, respStruct)
+
+	return nil
+}
+
+// CreateNews 创建新闻
+func (s *NewsService) CreateNews(ctx http.Context) error {
+	//绑定参数
+	req := data.CreateNewsReq{}
+	if err := ctx.Bind(&req); err != nil {
+	}
+	respStruct, err := s.uc.CreateNews(ctx, &req)
+	if err != nil {
+		return err
+	}
+
+	ctx.JSON(200, respStruct)
+
+	return nil
+}
+
+// GetNewsList 创建新闻
+func (s *NewsService) GetNewsList(ctx http.Context) error {
+	//绑定参数
+	// 解析请求体中的JSON数据
+	var req data.GetNewsListReq
+	if err := ctx.Bind(&req); err != nil {
+		log.Errorf("解析请求体失败: %v", err)
+		return ctx.JSON(400, map[string]interface{}{
+			"statusCode": 400,
+			"message":    "请求参数错误: " + err.Error(),
+			"data":       nil,
+		})
+	}
+
+	respStruct, err := s.uc.GetNewsList(ctx, &req)
 	if err != nil {
 		return err
 	}

@@ -23,13 +23,19 @@ func NewNewsUsecase(repo NewsRepo, rpc *data.GRPCClient, logger log.Logger) *New
 }
 
 func (uc *NewsUsecase) CreateNews(ctx context.Context, req *data.CreateNewsReq) (data.CreateNewsResp, error) {
-	//TODO调用grpc服务
-
-	return data.CreateNewsResp{}, nil
+	//调用grpc服务
+	resp, err := data.NewNewsRepo(log.GetLogger(), uc.rpc).CreateNews(ctx, &data.CreateNewsReq{
+		Title:   req.Title,
+		Content: req.Content,
+	})
+	if err != nil {
+		return data.CreateNewsResp{}, err
+	}
+	return resp, nil
 }
 
 func (uc *NewsUsecase) GetNewsDetail(ctx context.Context, Id int32) (data.GetNewsDetailResp, error) {
-	//DOTO调用grpc服务
+	//调用grpc服务
 	resp, err := data.NewNewsRepo(log.GetLogger(), uc.rpc).GetNewsDetail(ctx, &data.GetNewsDetailReq{
 		Id: Id,
 	})

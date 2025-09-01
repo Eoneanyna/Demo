@@ -2,8 +2,6 @@ module demo
 
 go 1.22.0
 
-toolchain go1.22.7
-
 //replace gitlab.cqrb.cn/shangyou_mic/testpg/api/helloword/v1 => /Users/lhb/www/goweb/src/cqcb.com/michttp
 replace (
 	demoserveice => D:\golang\code\DemoService
@@ -16,12 +14,12 @@ require (
 	github.com/go-kratos/kratos/contrib/registry/nacos/v2 v2.0.0-20250304015625-3a0bd5074127
 	github.com/go-kratos/kratos/v2 v2.8.3
 	github.com/go-redis/redis v6.15.9+incompatible
-	github.com/golang/protobuf v1.5.4
 	github.com/google/wire v0.6.0
 	github.com/nacos-group/nacos-sdk-go v1.1.5
 	github.com/pkg/errors v0.9.1
 	github.com/redis/go-redis/v9 v9.7.1
 	gitlab.cqrb.cn/shangyou_mic/testpg v0.0.0-00010101000000-000000000000
+	google.golang.org/genproto/googleapis/api v0.0.0-20250106144421-5f5ef82da422
 	google.golang.org/grpc v1.71.0
 	google.golang.org/protobuf v1.36.5
 	gopkg.in/yaml.v3 v3.0.1
@@ -31,7 +29,7 @@ require (
 
 require (
 	dario.cat/mergo v1.0.0 // indirect
-	github.com/aliyun/alibaba-cloud-sdk-go v1.62.47 // indirect
+	github.com/aliyun/alibaba-cloud-sdk-go v1.63.107 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
@@ -50,7 +48,7 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/nxadm/tail v1.4.8 // indirect
+	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/onsi/gomega v1.36.2 // indirect
 	github.com/opentracing/opentracing-go v1.2.1-0.20220228012449-10b1cf09e00b // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
@@ -63,7 +61,6 @@ require (
 	golang.org/x/sync v0.10.0 // indirect
 	golang.org/x/sys v0.29.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20250106144421-5f5ef82da422 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250115164207-1a7da9e5054f // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect

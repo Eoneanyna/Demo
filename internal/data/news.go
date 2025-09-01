@@ -2,6 +2,7 @@ package data
 
 import (
 	"context"
+	"demo/internal/biz"
 	v1 "demoserveice/api/news/v1"
 	"github.com/go-kratos/kratos/v2/log"
 	"time"
@@ -16,62 +17,35 @@ func NewNewsRepo(logger log.Logger, rpc *GRPCClient) *newsRepo {
 	return &newsRepo{log.NewHelper(logger), rpc}
 }
 
-type CreateNewsReq struct {
-	Title   string `json:"title"`
-	Content string `json:"content"`
-}
-type CreateNewsResp struct {
-	Id int32 `json:"id"`
-}
-
-func (r *newsRepo) CreateNews(ctx context.Context, news *CreateNewsReq) (CreateNewsResp, error) {
+func (r *newsRepo) CreateNews(ctx context.Context, news *biz.CreateNewsReq) (biz.CreateNewsResp, error) {
 	res, err := v1.NewNewsServiceClient(r.rpc.news).CreateNews(ctx, &v1.CreateNewsRequest{Title: news.Title, Content: news.Content})
 	if err != nil {
 		r.log.Errorf("调用CreateNews接口失败: %v", err)
-		return CreateNewsResp{}, err
+		return biz.CreateNewsResp{}, err
 	}
 
-	return CreateNewsResp{
+	return biz.CreateNewsResp{
 		Id: res.Id,
 	}, nil
 }
 
-type GetNewsDetailReq struct {
-	Id int32 `json:"id"`
-}
-
-type GetNewsDetailResp struct {
-	Id         int32  `json:"id"`
-	Title      string `json:"title"`
-	Content    string `json:"content"`
-	CreateTime string `json:"create_time"`
-}
-
-func (r *newsRepo) GetNewsDetail(ctx context.Context, req *GetNewsDetailReq) (GetNewsDetailResp, error) {
+func (r *newsRepo) GetNewsDetail(ctx context.Context, req *biz.GetNewsDetailReq) (biz.GetNewsDetailResp, error) {
 	res, err := v1.NewNewsServiceClient(r.rpc.news).GetNewsById(ctx, &v1.GetNewsByIdRequest{Id: req.Id})
 	if err != nil {
 		r.log.Errorf("调用GetNewsById接口失败: %v", err)
-		return GetNewsDetailResp{}, err
+		return biz.GetNewsDetailResp{}, err
 	}
 
 	timeTemplate1 := "2006-01-02T15:04:05Z" //常规类型
 
-	return GetNewsDetailResp{
-		Id:         res.News.Id,
-		Title:      res.News.Title,
-		Content:    res.News.Content,
-		CreateTime: time.Unix(res.News.CreateTime, 0).Format(timeTemplate1),
+	return biz.GetNewsDetailResp{
+		Id:         res.Id,
+		Title:      res.Title,
+		Content:    res.Content,
+		CreateTime: time.Unix(res.CreateTime, 0).Format(timeTemplate1),
 	}, nil
 }
 
-type GetNewsListReq struct {
-	PageNum int32 `json:"page_num"`
-}
-
-type GetNewsListResp struct {
-	List []GetNewsDetailResp `json:"list"`
-}
-
-func (r *newsRepo) GetNewsList(ctx context.Context, req *GetNewsListReq) (GetNewsListResp, error) {
-	return GetNewsListResp{}, nil
+func (r *newsRepo) GetNewsList(ctx context.Context, req *biz.GetNewsListReq) (biz.GetNewsListResp, error) {
+	return biz.GetNewsListResp{}, nil
 }

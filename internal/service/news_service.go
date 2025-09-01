@@ -1,11 +1,11 @@
 package service
 
 import (
+	"context"
+	v1 "demo/api/news"
 	"demo/internal/biz"
-	"demo/internal/data"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	"strconv"
 )
 
 type NewsService struct {
@@ -18,67 +18,46 @@ func NewNewsService(uc *biz.NewsUsecase, logger log.Logger) *NewsService {
 }
 
 // GetNewsById 根据ID获取新闻详情
-func (s *NewsService) GetNewsById(ctx http.Context) error {
-	// 从路径参数中获取 id
-	idStr := ctx.Vars().Get("id")
-
-	// 将字符串类型的 ID 转换为整数类型
-	id, err := strconv.ParseInt(idStr, 10, 32)
+func (s *NewsService) GetNewsById(ctx context.Context, req *v1.GetNewsByIdRequest) (*v1.GetNewsByIdResponse, error) {
+	respStruct, err := s.uc.GetNewsDetail(ctx, req.Id)
 	if err != nil {
-		// 如果转换失败，返回错误响应
-		return ctx.JSON(400, map[string]interface{}{
-			"statusCode": 400,
-			"message":    "Invalid ID format",
-			"data":       nil,
-		})
+		return &v1.GetNewsByIdResponse{}, err
 	}
 
-	respStruct, err := s.uc.GetNewsDetail(ctx, int32(id))
-	if err != nil {
-		return err
-	}
+	return &v1.GetNewsByIdResponse{
+		News: &v1.News{
+			Id:         respStruct.Id,
+			Title:      respStruct.Title,
+			Content:    respStruct.Content,
+			CreateTime: respStruct.CreateTime,
+		}}, nil
 
-	ctx.JSON(200, respStruct)
-
-	return nil
 }
 
 // CreateNews 创建新闻
-func (s *NewsService) CreateNews(ctx http.Context) error {
-	//绑定参数
-	req := data.CreateNewsReq{}
-	if err := ctx.Bind(&req); err != nil {
-	}
-	respStruct, err := s.uc.CreateNews(ctx, &req)
+func (s *NewsService) CreateNews(ctx context.Context, req *v1.CreateNewsRequest) (*v1.CreateNewsResponse, error) {
+	respStruct, err := s.uc.CreateNews(ctx, &biz.CreateNewsReq{
+		Title:   req.Title,
+		Content: req.Content,
+	})
 	if err != nil {
-		return err
+		return &v1.CreateNewsResponse{}, err
 	}
 
-	ctx.JSON(200, respStruct)
-
-	return nil
+	return &v1.CreateNewsResponse{
+		Id: respStruct.Id,
+	}, nil
 }
 
 // GetNewsList 创建新闻
 func (s *NewsService) GetNewsList(ctx http.Context) error {
-	//绑定参数
-	// 解析请求体中的JSON数据
-	var req data.GetNewsListReq
-	if err := ctx.Bind(&req); err != nil {
-		log.Errorf("解析请求体失败: %v", err)
-		return ctx.JSON(400, map[string]interface{}{
-			"statusCode": 400,
-			"message":    "请求参数错误: " + err.Error(),
-			"data":       nil,
-		})
-	}
-
-	respStruct, err := s.uc.GetNewsList(ctx, &req)
-	if err != nil {
-		return err
-	}
-
-	ctx.JSON(200, respStruct)
+	//TODO
+	//respStruct, err := s.uc.GetNewsList(ctx, &req)
+	//if err != nil {
+	//	return err
+	//}
+	//
+	//ctx.JSON(200, respStruct)
 
 	return nil
 }

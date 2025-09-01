@@ -25,7 +25,7 @@ func initApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 	//}
 	grpcClient := data.NewGRPCClient(confServer, logger)
 	newsRepo := data.NewNewsRepo(logger, grpcClient)
-	newsUsecase := biz.NewNewsUsecase(newsRepo,grpcClient, logger)
+	newsUsecase := biz.NewNewsUsecase(newsRepo,logger)
 	newsService := service.NewNewsService(newsUsecase, logger)
 	httpServer := server.NewHTTPServer(confServer, newsService)
 	grpcServer := server.NewGRPCServer(confServer)

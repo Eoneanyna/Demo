@@ -1,7 +1,7 @@
 package server
 
 import (
-	"demo/api"
+	v1 "demo/api/news"
 	"demo/internal/conf"
 	"demo/internal/service"
 	"demo/middleware/validate"
@@ -51,7 +51,7 @@ func NewHTTPServer(c *conf.Server, newsService *service.NewsService) *http.Serve
 		return nil
 	})
 	//v1.RegisterGreeterHTTPServer(srv, GreeterService)
-	api.RegisterNewsHTTPServer(srv, newsService)
-
+	//api.RegisterNewsHTTPServer(srv, newsService)
+	v1.RegisterNewsServiceHTTPServer(srv, newsService)
 	return srv
 }

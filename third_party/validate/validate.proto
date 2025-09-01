@@ -1,12 +1,13 @@
 syntax = "proto2";
-package validate;
 
-option go_package = "github.com/envoyproxy/protoc-gen-validate/validate";
-option java_package = "io.envoyproxy.pgv.validate";
+package validate;
 
 import "google/protobuf/descriptor.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/envoyproxy/protoc-gen-validate/validate";
+option java_package = "io.envoyproxy.pgv.validate";
 
 // Validation rules applied at the message level
 extend google.protobuf.MessageOptions {
@@ -37,30 +38,30 @@ message FieldRules {
     optional MessageRules message = 17;
     oneof type {
         // Scalar Field Types
-        FloatRules    float    = 1;
-        DoubleRules   double   = 2;
-        Int32Rules    int32    = 3;
-        Int64Rules    int64    = 4;
-        UInt32Rules   uint32   = 5;
-        UInt64Rules   uint64   = 6;
-        SInt32Rules   sint32   = 7;
-        SInt64Rules   sint64   = 8;
-        Fixed32Rules  fixed32  = 9;
-        Fixed64Rules  fixed64  = 10;
+        FloatRules float = 1;
+        DoubleRules double = 2;
+        Int32Rules int32 = 3;
+        Int64Rules int64 = 4;
+        UInt32Rules uint32 = 5;
+        UInt64Rules uint64 = 6;
+        SInt32Rules sint32 = 7;
+        SInt64Rules sint64 = 8;
+        Fixed32Rules fixed32 = 9;
+        Fixed64Rules fixed64 = 10;
         SFixed32Rules sfixed32 = 11;
         SFixed64Rules sfixed64 = 12;
-        BoolRules     bool     = 13;
-        StringRules   string   = 14;
-        BytesRules    bytes    = 15;
+        BoolRules bool = 13;
+        StringRules string = 14;
+        BytesRules bytes = 15;
 
         // Complex Field Types
-        EnumRules     enum     = 16;
+        EnumRules enum = 16;
         RepeatedRules repeated = 18;
-        MapRules      map      = 19;
+        MapRules map = 19;
 
         // Well-Known Field Types
-        AnyRules       any       = 20;
-        DurationRules  duration  = 21;
+        AnyRules any = 20;
+        DurationRules duration = 21;
         TimestampRules timestamp = 22;
     }
 }
@@ -99,6 +100,9 @@ message FloatRules {
     // IgnoreEmpty specifies that the validation rules of this field should be
     // evaluated only if the field is not empty
     optional bool ignore_empty = 8;
+
+    //Msg custom error information
+    optional string msg = 9;
 }
 
 // DoubleRules describes the constraints applied to `double` values
@@ -135,6 +139,9 @@ message DoubleRules {
     // IgnoreEmpty specifies that the validation rules of this field should be
     // evaluated only if the field is not empty
     optional bool ignore_empty = 8;
+
+    //Msg custom error information
+    optional string msg = 9;
 }
 
 // Int32Rules describes the constraints applied to `int32` values
@@ -171,6 +178,9 @@ message Int32Rules {
     // IgnoreEmpty specifies that the validation rules of this field should be
     // evaluated only if the field is not empty
     optional bool ignore_empty = 8;
+
+    //Msg custom error information
+    optional string msg = 9;
 }
 
 // Int64Rules describes the constraints applied to `int64` values
@@ -207,6 +217,9 @@ message Int64Rules {
     // IgnoreEmpty specifies that the validation rules of this field should be
     // evaluated only if the field is not empty
     optional bool ignore_empty = 8;
+
+    //Msg custom error information
+    optional string msg = 9;
 }
 
 // UInt32Rules describes the constraints applied to `uint32` values
@@ -243,6 +256,9 @@ message UInt32Rules {
     // IgnoreEmpty specifies that the validation rules of this field should be
     // evaluated only if the field is not empty
     optional bool ignore_empty = 8;
+
+    //Msg custom error information
+    optional string msg = 9;
 }
 
 // UInt64Rules describes the constraints applied to `uint64` values
@@ -279,6 +295,9 @@ message UInt64Rules {
     // IgnoreEmpty specifies that the validation rules of this field should be
     // evaluated only if the field is not empty
     optional bool ignore_empty = 8;
+
+    //Msg custom error information
+    optional string msg = 9;
 }
 
 // SInt32Rules describes the constraints applied to `sint32` values
@@ -501,6 +520,8 @@ message SFixed64Rules {
 message BoolRules {
     // Const specifies that this field must be exactly the specified value
     optional bool const = 1;
+    //Msg custom error information
+    optional string msg = 2;
 }
 
 // StringRules describe the constraints applied to `string` values
@@ -524,7 +545,6 @@ message StringRules {
     optional uint64 max_len = 3;
 
     // LenBytes specifies that this field must be the specified number of bytes
-    // at a minimum
     optional uint64 len_bytes = 20;
 
     // MinBytes specifies that this field must be the specified number of bytes
@@ -535,18 +555,18 @@ message StringRules {
     // at a maximum
     optional uint64 max_bytes = 5;
 
-    // Pattern specifes that this field must match against the specified
+    // Pattern specifies that this field must match against the specified
     // regular expression (RE2 syntax). The included expression should elide
     // any delimiters.
-    optional string pattern  = 6;
+    optional string pattern = 6;
 
     // Prefix specifies that this field must have the specified substring at
     // the beginning of the string.
-    optional string prefix   = 7;
+    optional string prefix = 7;
 
     // Suffix specifies that this field must have the specified substring at
     // the end of the string.
-    optional string suffix   = 8;
+    optional string suffix = 8;
 
     // Contains specifies that this field must have the specified substring
     // anywhere in the string.
@@ -558,7 +578,7 @@ message StringRules {
 
     // In specifies that this field must be equal to one of the specified
     // values
-    repeated string in     = 10;
+    repeated string in = 10;
 
     // NotIn specifies that this field cannot be equal to one of the specified
     // values
@@ -569,7 +589,7 @@ message StringRules {
     oneof well_known {
         // Email specifies that the field must be a valid email address as
         // defined by RFC 5322
-        bool email    = 12;
+        bool email = 12;
 
         // Hostname specifies that the field must be a valid hostname as
         // defined by RFC 1034. This constraint does not support
@@ -578,57 +598,60 @@ message StringRules {
 
         // Ip specifies that the field must be a valid IP (v4 or v6) address.
         // Valid IPv6 addresses should not include surrounding square brackets.
-        bool ip       = 14;
+        bool ip = 14;
 
         // Ipv4 specifies that the field must be a valid IPv4 address.
-        bool ipv4     = 15;
+        bool ipv4 = 15;
 
         // Ipv6 specifies that the field must be a valid IPv6 address. Valid
         // IPv6 addresses should not include surrounding square brackets.
-        bool ipv6     = 16;
+        bool ipv6 = 16;
 
         // Uri specifies that the field must be a valid, absolute URI as defined
         // by RFC 3986
-        bool uri      = 17;
+        bool uri = 17;
 
         // UriRef specifies that the field must be a valid URI as defined by RFC
         // 3986 and may be relative or absolute.
-        bool uri_ref  = 18;
+        bool uri_ref = 18;
 
         // Address specifies that the field must be either a valid hostname as
         // defined by RFC 1034 (which does not support internationalized domain
         // names or IDNs), or it can be a valid IP (v4 or v6).
-        bool address  = 21;
+        bool address = 21;
 
         // Uuid specifies that the field must be a valid UUID as defined by
         // RFC 4122
-        bool uuid     = 22;
+        bool uuid = 22;
 
         // WellKnownRegex specifies a common well known pattern defined as a regex.
         KnownRegex well_known_regex = 24;
     }
 
-  // This applies to regexes HTTP_HEADER_NAME and HTTP_HEADER_VALUE to enable
-  // strict header validation.
-  // By default, this is true, and HTTP header validations are RFC-compliant.
-  // Setting to false will enable a looser validations that only disallows
-  // \r\n\0 characters, which can be used to bypass header matching rules.
-  optional bool strict = 25 [default = true];
+    // This applies to regexes HTTP_HEADER_NAME and HTTP_HEADER_VALUE to enable
+    // strict header validation.
+    // By default, this is true, and HTTP header validations are RFC-compliant.
+    // Setting to false will enable a looser validations that only disallows
+    // \r\n\0 characters, which can be used to bypass header matching rules.
+    optional bool strict = 25 [default = true];
 
-  // IgnoreEmpty specifies that the validation rules of this field should be
-  // evaluated only if the field is not empty
-  optional bool ignore_empty = 26;
+    // IgnoreEmpty specifies that the validation rules of this field should be
+    // evaluated only if the field is not empty
+    optional bool ignore_empty = 26;
+
+    //Msg custom error information
+    optional string msg = 27;
 }
 
 // WellKnownRegex contain some well-known patterns.
 enum KnownRegex {
-  UNKNOWN = 0;
+    UNKNOWN = 0;
 
-  // HTTP header name as defined by RFC 7230.
-  HTTP_HEADER_NAME = 1;
+    // HTTP header name as defined by RFC 7230.
+    HTTP_HEADER_NAME = 1;
 
-  // HTTP header value as defined by RFC 7230.
-  HTTP_HEADER_VALUE = 2;
+    // HTTP header value as defined by RFC 7230.
+    HTTP_HEADER_VALUE = 2;
 }
 
 // BytesRules describe the constraints applied to `bytes` values
@@ -647,26 +670,26 @@ message BytesRules {
     // at a maximum
     optional uint64 max_len = 3;
 
-    // Pattern specifes that this field must match against the specified
+    // Pattern specifies that this field must match against the specified
     // regular expression (RE2 syntax). The included expression should elide
     // any delimiters.
-    optional string pattern  = 4;
+    optional string pattern = 4;
 
     // Prefix specifies that this field must have the specified bytes at the
     // beginning of the string.
-    optional bytes  prefix   = 5;
+    optional bytes prefix = 5;
 
     // Suffix specifies that this field must have the specified bytes at the
     // end of the string.
-    optional bytes  suffix   = 6;
+    optional bytes suffix = 6;
 
     // Contains specifies that this field must have the specified bytes
     // anywhere in the string.
-    optional bytes  contains = 7;
+    optional bytes contains = 7;
 
     // In specifies that this field must be equal to one of the specified
     // values
-    repeated bytes in     = 8;
+    repeated bytes in = 8;
 
     // NotIn specifies that this field cannot be equal to one of the specified
     // values
@@ -677,7 +700,7 @@ message BytesRules {
     oneof well_known {
         // Ip specifies that the field must be a valid IP (v4 or v6) address in
         // byte format
-        bool ip   = 10;
+        bool ip = 10;
 
         // Ipv4 specifies that the field must be a valid IPv4 address in byte
         // format
@@ -696,19 +719,19 @@ message BytesRules {
 // EnumRules describe the constraints applied to enum values
 message EnumRules {
     // Const specifies that this field must be exactly the specified value
-    optional int32 const        = 1;
+    optional int32 const = 1;
 
     // DefinedOnly specifies that this field must be only one of the defined
     // values for this enum, failing on any undefined value.
-    optional bool  defined_only = 2;
+    optional bool defined_only = 2;
 
     // In specifies that this field must be equal to one of the specified
     // values
-    repeated int32 in           = 3;
+    repeated int32 in = 3;
 
     // NotIn specifies that this field cannot be equal to one of the specified
     // values
-    repeated int32 not_in       = 4;
+    repeated int32 not_in = 4;
 }
 
 // MessageRules describe the constraints applied to embedded message values.
@@ -716,7 +739,7 @@ message EnumRules {
 message MessageRules {
     // Skip specifies that the validation rules of this field should not be
     // evaluated
-    optional bool skip     = 1;
+    optional bool skip = 1;
 
     // Required specifies that this field must be set
     optional bool required = 2;
@@ -733,11 +756,11 @@ message RepeatedRules {
     optional uint64 max_items = 2;
 
     // Unique specifies that all elements in this field must be unique. This
-    // contraint is only applicable to scalar and enum types (messages are not
+    // constraint is only applicable to scalar and enum types (messages are not
     // supported).
-    optional bool   unique    = 3;
+    optional bool unique = 3;
 
-    // Items specifies the contraints to be applied to each item in the field.
+    // Items specifies the constraints to be applied to each item in the field.
     // Repeated message fields will still execute validation against each item
     // unless skip is specified here.
     optional FieldRules items = 4;
@@ -745,6 +768,9 @@ message RepeatedRules {
     // IgnoreEmpty specifies that the validation rules of this field should be
     // evaluated only if the field is not empty
     optional bool ignore_empty = 5;
+
+    //Msg custom error information
+    optional string msg = 6;
 }
 
 // MapRules describe the constraints applied to `map` values
@@ -762,7 +788,7 @@ message MapRules {
     optional bool no_sparse = 3;
 
     // Keys specifies the constraints to be applied to each key in the field.
-    optional FieldRules keys   = 4;
+    optional FieldRules keys = 4;
 
     // Values specifies the constraints to be applied to the value of each key
     // in the field. Message values will still have their validations evaluated
@@ -782,7 +808,7 @@ message AnyRules {
 
     // In specifies that this field's `type_url` must be equal to one of the
     // specified values.
-    repeated string in     = 2;
+    repeated string in = 2;
 
     // NotIn specifies that this field's `type_url` must not be equal to any of
     // the specified values.
@@ -850,11 +876,11 @@ message TimestampRules {
 
     // LtNow specifies that this must be less than the current time. LtNow
     // can only be used with the Within rule.
-    optional bool lt_now  = 7;
+    optional bool lt_now = 7;
 
     // GtNow specifies that this must be greater than the current time. GtNow
     // can only be used with the Within rule.
-    optional bool gt_now  = 8;
+    optional bool gt_now = 8;
 
     // Within specifies that this field must be within this duration of the
     // current time. This constraint can be used alone or with the LtNow and

@@ -2,56 +2,76 @@ package biz
 
 import (
 	"context"
-	"demo/internal/data"
 	"github.com/go-kratos/kratos/v2/log"
 )
 
 type NewsRepo interface {
-	CreateNews(context.Context, *data.CreateNewsReq) (data.CreateNewsResp, error)
-	GetNewsDetail(context.Context, *data.GetNewsDetailReq) (data.GetNewsDetailResp, error)
-	GetNewsList(context.Context, *data.GetNewsListReq) (data.GetNewsListResp, error)
+	CreateNews(context.Context, *CreateNewsReq) (CreateNewsResp, error)
+	GetNewsDetail(context.Context, *GetNewsDetailReq) (GetNewsDetailResp, error)
+	GetNewsList(context.Context, *GetNewsListReq) (GetNewsListResp, error)
 }
 
 type NewsUsecase struct {
 	repo NewsRepo
-	rpc  *data.GRPCClient
 	log  *log.Helper
 }
 
-func NewNewsUsecase(repo NewsRepo, rpc *data.GRPCClient, logger log.Logger) *NewsUsecase {
-	return &NewsUsecase{repo: repo, rpc: rpc, log: log.NewHelper(logger)}
+func NewNewsUsecase(repo NewsRepo, logger log.Logger) *NewsUsecase {
+	return &NewsUsecase{repo: repo, log: log.NewHelper(logger)}
 }
 
-func (uc *NewsUsecase) CreateNews(ctx context.Context, req *data.CreateNewsReq) (data.CreateNewsResp, error) {
+type CreateNewsReq struct {
+	Title   string `json:"title"`
+	Content string `json:"content"`
+}
+type CreateNewsResp struct {
+	Id int32 `json:"id"`
+}
+
+func (uc *NewsUsecase) CreateNews(ctx context.Context, req *CreateNewsReq) (CreateNewsResp, error) {
 	//调用grpc服务
-	resp, err := data.NewNewsRepo(log.GetLogger(), uc.rpc).CreateNews(ctx, &data.CreateNewsReq{
+	resp, err := uc.repo.CreateNews(ctx, &CreateNewsReq{
 		Title:   req.Title,
 		Content: req.Content,
 	})
 	if err != nil {
-		return data.CreateNewsResp{}, err
+		return CreateNewsResp{}, err
 	}
 	return resp, nil
 }
 
-func (uc *NewsUsecase) GetNewsDetail(ctx context.Context, Id int32) (data.GetNewsDetailResp, error) {
+type GetNewsDetailReq struct {
+	Id int32 `json:"id"`
+}
+
+type GetNewsDetailResp struct {
+	Id         int32  `json:"id"`
+	Title      string `json:"title"`
+	Content    string `json:"content"`
+	CreateTime string `json:"create_time"`
+}
+
+func (uc *NewsUsecase) GetNewsDetail(ctx context.Context, Id int32) (GetNewsDetailResp, error) {
 	//调用grpc服务
-	resp, err := data.NewNewsRepo(log.GetLogger(), uc.rpc).GetNewsDetail(ctx, &data.GetNewsDetailReq{
+	resp, err := uc.repo.GetNewsDetail(ctx, &GetNewsDetailReq{
 		Id: Id,
 	})
 	if err != nil {
-		return data.GetNewsDetailResp{}, err
+		return GetNewsDetailResp{}, err
 	}
 
 	log.Info("GetNewsDetailResp:", resp)
-	return data.GetNewsDetailResp{
-		Id:         resp.Id,
-		Title:      resp.Title,
-		Content:    resp.Content,
-		CreateTime: resp.CreateTime,
-	}, nil
+	return resp, nil
 }
 
-func (uc *NewsUsecase) GetNewsList(ctx context.Context, req *data.GetNewsListReq) (data.GetNewsListResp, error) {
+type GetNewsListReq struct {
+	PageNum int32 `json:"page_num"`
+}
+
+type GetNewsListResp struct {
+	List []GetNewsDetailResp `json:"list"`
+}
+
+func (uc *NewsUsecase) GetNewsList(ctx context.Context, req *GetNewsListReq) (GetNewsListResp, error) {
 	return uc.repo.GetNewsList(ctx, req)
 }

@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package demo;
+
+import "google/api/annotations.proto";
+//import "validate/validate.proto";
+
+option go_package = "demo/api/news";
+option java_multiple_files = true;
+
+
+// 新闻服务
+service NewsService {
+  // 根据ID获取新闻详情
+  rpc GetNewsById(GetNewsByIdRequest) returns (GetNewsByIdResponse) {
+    option (google.api.http) = {
+      get: "/news/{id}"
+    };
+  }
+    // 根据ID获取新闻详情
+  rpc CreateNews(CreateNewsRequest) returns (CreateNewsResponse) {
+    option (google.api.http) = {
+    post: "/news"
+    body: "*"
+    };
+  }
+}
+
+// 根据ID获取新闻详情请求
+message GetNewsByIdRequest {
+  int32 id = 1;
+}
+
+// 根据ID获取新闻详情响应
+message GetNewsByIdResponse {
+  News news = 1;
+}
+
+// 创建新闻请求
+message CreateNewsRequest {
+  string title = 1;
+  string content = 2;
+}
+
+ // 创建新闻响应
+message CreateNewsResponse {
+  int32 id = 1;
+}
+
+// 新闻信息
+message News {
+  int32 id = 1;
+  string title = 2;
+  string content = 3;
+  string create_time = 4;
+}
